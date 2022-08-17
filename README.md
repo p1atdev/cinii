@@ -1,46 +1,64 @@
-# Deno template project
+# CiNii Research API Client for Deno
 
 ![deno compatibility](https://shield.deno.dev/deno/^1.24)
-[![vr scripts](https://badges.velociraptor.run/flat.svg)](https://velociraptor.run)
-
-# Features
-
--   VSCode extension setup for Deno
--   [Velociraptor](https://velociraptor.run/)
--   [Dockerfile](https://hub.docker.com/r/denoland/deno)
+[![deno module](https://shield.deno.dev/x/cinii)](https://deno.land/x/cinii])
+![Test](https://github.com/p1atdev/cinii/actions/workflows/test.yaml/badge.svg)
 
 # Usage
 
-## GitHub Template
+-   search from all types
 
-[Create a repo from this template](https://github.com/p1atdev/deno_template/generate)
+```ts
+import { CiNiiClient } from "https://deno.land/x/cinii/mod.ts"
 
-## Clone
+const client = new CiNiiClient({ appId: "your_app_id" }) // or, if not specified, refer to the environment variable CINII_APP_ID
 
-```bash
-git clone https://github.com/p1atdev/deno_template my_deno_project
+const res = await client.all({
+    q: "QUIC",
+    count: 100,
+})
+
+assertEquals(res.items.length, 100)
+
+const titles = res.items.map((i) => i.title)
+
+assertArrayIncludes(titles, [
+    "Improving the performance of HTTP/3 communications when communicating simultaneously which uses CUBIC TCP and TCP BBR",
+])
 ```
 
-## Badges
+-   search from only books
 
--   Test workflow
+```ts
+const client = new CiNiiClient({ appId })
 
-```md
-![Test](https://github.com/[your_name]/[your_repo_name]/actions/workflows/test.yml/badge.svg)
+const res = await client.books({
+    q: "Python",
+    count: 200,
+})
+
+assert(res.items.every((i) => i["dc:type"] === "Book"))
 ```
 
--   Deno compatibility
+-   supports all query options
 
-![deno compatibility](https://shield.deno.dev/deno/^1.24)
+```ts
+import { datetime } from "https://deno.land/x/ptera@v1.0.2/mod.ts" // Date library
 
+const client = new CiNiiClient({ appId })
+const res = await client.all({
+    q: "拾遺和歌集",
+    count: 10,
+    dataSourceType: "KAKEN",
+    from: datetime({
+        year: 2022,
+        month: 4,
+    }),
+})
+
+assertExists(res.items[0].title)
 ```
-![deno compatibility](https://shield.deno.dev/deno/^1.24)
-```
 
--   Deno module
+# Query Reference
 
-[![deno module](https://shield.deno.dev/x/oak)](https://deno.land/x/oak])
-
-```md
-[![deno module](https://shield.deno.dev/x/oak)](https://deno.land/x/oak])
-```
+**[クエリ仕様 - CiNii Research の OpenSearch](https://support.nii.ac.jp/ja/cir/r_opensearch#query)**
