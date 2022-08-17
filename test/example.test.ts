@@ -4,7 +4,6 @@ import {
   assertArrayIncludes,
   assertEquals,
   assertExists,
-  assertNotEquals,
   datetime,
 } from "../deps.ts";
 
