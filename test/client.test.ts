@@ -1,6 +1,6 @@
 import {
+  CiNiiClient,
   CiNiiEnv,
-  CiNIiiClient,
   CiNiiResult,
   FormatType,
   SearchType,
@@ -28,7 +28,7 @@ const formatTypes: FormatType[] = [
 Deno.test("simple get", async () => {
   await Promise.all(searchTypes.flatMap((searchType) => {
     return Promise.all(formatTypes.map(async (formatType) => {
-      const client = new CiNIiiClient({ appId });
+      const client = new CiNiiClient({ appId });
       const res = await client.get(searchType, formatType, {
         q: "DALL E",
       });
@@ -44,7 +44,7 @@ Deno.test("simple get", async () => {
         case "json": {
           const result: CiNiiResult = await res.json();
 
-          assertStringIncludes(result.title, "DALL E json");
+          assertStringIncludes(result.title, "DALL E");
           break;
         }
         case "html": {
@@ -57,7 +57,7 @@ Deno.test("simple get", async () => {
 });
 
 Deno.test("all search", async () => {
-  const client = new CiNIiiClient({ appId });
+  const client = new CiNiiClient({ appId });
   const res = await client.all({
     q: "Python",
     count: 100,
@@ -69,7 +69,7 @@ Deno.test("all search", async () => {
 });
 
 Deno.test("data search", async () => {
-  const client = new CiNIiiClient({ appId });
+  const client = new CiNiiClient({ appId });
   const res = await client.data({
     q: "Python",
     count: 10,
@@ -81,7 +81,7 @@ Deno.test("data search", async () => {
 });
 
 Deno.test("articles search", async () => {
-  const client = new CiNIiiClient({ appId });
+  const client = new CiNiiClient({ appId });
   const res = await client.articles({
     q: "Python",
     count: 100,
@@ -93,7 +93,7 @@ Deno.test("articles search", async () => {
 });
 
 Deno.test("books search", async () => {
-  const client = new CiNIiiClient({ appId });
+  const client = new CiNiiClient({ appId });
   const res = await client.books({
     q: "Python",
     count: 100,
@@ -105,7 +105,7 @@ Deno.test("books search", async () => {
 });
 
 Deno.test("dissertations search", async () => {
-  const client = new CiNIiiClient({ appId });
+  const client = new CiNiiClient({ appId });
   const res = await client.dissertations({
     q: "Python",
     count: 3,
@@ -117,7 +117,7 @@ Deno.test("dissertations search", async () => {
 });
 
 Deno.test("projects search", async () => {
-  const client = new CiNIiiClient({ appId });
+  const client = new CiNiiClient({ appId });
   const res = await client.projects({
     q: "Python",
     count: 100,
