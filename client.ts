@@ -1,7 +1,7 @@
 // Reference: https://support.nii.ac.jp/ja/cir/r_opensearch#query
 
 import { DateTime } from "./deps.ts";
-import { CiNiiEnv, CiNiiFormatDate, CiNIiiURL } from "./mod.ts";
+import { CiNiiEnv, CiNiiFormatDate, CiNIiiURL, CiNiiResult } from "./mod.ts";
 
 export type SearchType =
   | "all"
@@ -143,7 +143,7 @@ interface CiNiiResearchQuery {
 
   doi?: string;
 
-  datasourceType?: string;
+  dataSourceType?: string;
 
   languageType?: string;
 
@@ -384,44 +384,46 @@ export interface CiNiiResearchQueryOptions {
   resourceType?: ResourceType | ResourceType[];
 }
 
-export class CiNIiiClient {
+export class CiNiiClient {
   private appId: string;
 
   constructor(options: { appId?: string }) {
     this.appId = options.appId ?? CiNiiEnv.APP_ID;
   }
 
-  async all(options: CiNiiResearchQueryOptions) {
+  async all(options: CiNiiResearchQueryOptions): Promise<CiNiiResult> {
     const res = await this.get("all", "json", options);
     const json = await res.json();
     return json;
   }
 
-  async data(options: CiNiiResearchQueryOptions) {
+  async data(options: CiNiiResearchQueryOptions): Promise<CiNiiResult> {
     const res = await this.get("data", "json", options);
     const json = await res.json();
     return json;
   }
 
-  async articles(options: CiNiiResearchQueryOptions) {
+  async articles(options: CiNiiResearchQueryOptions): Promise<CiNiiResult> {
     const res = await this.get("articles", "json", options);
     const json = await res.json();
     return json;
   }
 
-  async books(options: CiNiiResearchQueryOptions) {
+  async books(options: CiNiiResearchQueryOptions): Promise<CiNiiResult> {
     const res = await this.get("books", "json", options);
     const json = await res.json();
     return json;
   }
 
-  async dissertations(options: CiNiiResearchQueryOptions) {
+  async dissertations(
+    options: CiNiiResearchQueryOptions,
+  ): Promise<CiNiiResult> {
     const res = await this.get("dissertations", "json", options);
     const json = await res.json();
     return json;
   }
 
-  async projects(options: CiNiiResearchQueryOptions) {
+  async projects(options: CiNiiResearchQueryOptions): Promise<CiNiiResult> {
     const res = await this.get("projects", "json", options);
     const json = await res.json();
     return json;
@@ -458,14 +460,13 @@ export class CiNIiiClient {
       sortorder: convertSortOrder(options.sortOrder),
       from: CiNiiFormatDate(options.from),
       until: CiNiiFormatDate(options.until),
-      awardYear: CiNiiFormatDate(options.awardYear),
-      isFullTitle: options.exactTitleMatch,
       pages: options.pages instanceof Object
         ? `${options.pages.start}-${options.pages.end}`
         : options.pages !== undefined
         ? String(options.pages)
         : undefined,
-      datasourceType: this.joinArray(options.dataSourceType),
+      awardYear: CiNiiFormatDate(options.awardYear),
+      dataSourceType: this.joinArray(options.dataSourceType),
       languageType: this.joinArray(options.languageType),
       resourceType: this.joinArray(options.resourceType),
     };
